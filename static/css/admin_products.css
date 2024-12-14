@@ -59,3 +59,12 @@ body {
 .btn-add:hover {
     background-color: #a21b1b;
 }
+
+.btn_exit{
+    color: var(--color-white);
+    text-decoration: none;
+    padding: 4px 6px 4px 6px;
+    background-color: rgb(253, 44, 44);
+    border-radius: 5px;
+    font-size: 1.2em;
+}

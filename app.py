@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
+# Importar funciones del archivo database.py
+from database import create_order, get_orders_by_user, get_all_orders
 
 # Inicializar la app, base de datos y extensiones
 app = Flask(__name__)
@@ -212,6 +214,40 @@ def user_checkout():
         session.pop('cart', None)  # Vaciar el carrito después del pago
         return render_template('user/checkout_success.html')
     return render_template('user/checkout.html')
+
+# Ruta para crear un pedido (al finalizar checkout)
+@app.route('/order/create', methods=['POST'])
+@login_required
+def create_order_route():
+    cart = session.get('cart', [])
+    if not cart:
+        flash('El carrito está vacío.', 'danger')
+        return redirect(url_for('user_cart'))
+    
+    for item in cart:
+        create_order(user_id=current_user.id, product_id=item['id'], quantity=1)
+    
+    session.pop('cart', None)  # Vaciar carrito
+    flash('Pedido realizado con éxito.', 'success')
+    return redirect(url_for('user_orders'))
+
+# Ruta para listar los pedidos del usuario
+@app.route('/orders')
+@login_required
+def user_orders():
+    orders = get_orders_by_user(current_user.id)
+    return render_template('user/orders.html', orders=orders)
+
+# Ruta para que el vendedor vea todos los pedidos
+@app.route('/admin/orders')
+@login_required
+def admin_orders():
+    if not current_user.is_vendedor:
+        flash('Acceso denegado. No eres vendedor.', 'danger')
+        return redirect(url_for('user_home'))
+
+    orders = get_all_orders()
+    return render_template('admin/orders.html', orders=orders)
 
 if __name__ == '__main__':
     with app.app_context():

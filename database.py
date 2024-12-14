@@ -18,6 +18,15 @@ def init_db():
             price REAL NOT NULL,
             image TEXT
         );
+        
+        CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (product_id) REFERENCES products(id)
+        );
         ''')
     conn.close()
     print("Base de datos inicializada correctamente.")
@@ -63,3 +72,37 @@ def delete_product(product_id):
     with conn:
         conn.execute('DELETE FROM products WHERE id = ?', (product_id,))
     conn.close()
+
+# Crear un pedido
+def create_order(user_id, product_id, quantity):
+    conn = get_db_connection()
+    with conn:
+        conn.execute('''
+            INSERT INTO orders (user_id, product_id, quantity)
+            VALUES (?, ?, ?)
+        ''', (user_id, product_id, quantity))
+    conn.close()
+
+# Obtener pedidos por usuario
+def get_orders_by_user(user_id):
+    conn = get_db_connection()
+    orders = conn.execute('''
+        SELECT orders.id, products.name, products.price, orders.quantity
+        FROM orders
+        JOIN products ON orders.product_id = products.id
+        WHERE orders.user_id = ?
+    ''', (user_id,)).fetchall()
+    conn.close()
+    return orders
+
+# Obtener todos los pedidos
+def get_all_orders():
+    conn = get_db_connection()
+    orders = conn.execute('''
+        SELECT orders.id, users.username, products.name, products.price, orders.quantity
+        FROM orders
+        JOIN users ON orders.user_id = users.id
+        JOIN products ON orders.product_id = products.id
+    ''').fetchall()
+    conn.close()
+    return orders

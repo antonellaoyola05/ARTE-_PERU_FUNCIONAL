@@ -358,3 +358,7 @@ footer{
     text-align: center;
     color: var(--color-vino);
 }
+
+.card-title{
+    text-align: center !important;
+}

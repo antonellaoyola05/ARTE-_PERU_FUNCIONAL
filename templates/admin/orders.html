@@ -1,0 +1,19 @@
+<h2>Todos los Pedidos</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order['id'] }}</td>
+        <td>{{ order['username'] }}</td>
+        <td>{{ order['name'] }}</td>
+        <td>{{ order['price'] }}</td>
+        <td>{{ order['quantity'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
