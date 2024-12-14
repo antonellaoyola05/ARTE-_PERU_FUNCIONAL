@@ -21,9 +21,7 @@ def init_db():
         ''')
     conn.close()
     print("Base de datos inicializada correctamente.")
-
-
-
+    
 # Crear un producto
 def create_product(name, description, price, image=None):
     conn = get_db_connection()

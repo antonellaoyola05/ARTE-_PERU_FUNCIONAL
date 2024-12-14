@@ -51,6 +51,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Imagen</th>
                         <th>Nombre del Producto</th>
                         <th>Descripción</th>
                         <th>Precio</th>
@@ -61,6 +62,7 @@
                     {% for product in products %}
                     <tr>
                         <td>{{ loop.index }}</td>
+                        <td>#</td>
                         <td>{{ product.name }}</td>
                         <td>{{product.description}}</td>
                         <td>${{ product.price }}</td>
